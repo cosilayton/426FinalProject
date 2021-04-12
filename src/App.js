@@ -13,7 +13,7 @@ import Home from './Home';
 import Login from './Login';
 
 const config = {
-  appId: "1:1096449099:web:771193a7a07667083761ce",
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   projectId: "cool-react-game",
   authDomain: "cool-react-game.firebaseapp.com",
