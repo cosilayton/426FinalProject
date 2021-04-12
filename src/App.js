@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
-import { FirebaseAuthProvider, FirebaseAuthConsumer } from '@react-firebase/auth';
+import { FirebaseAuthProvider } from '@react-firebase/auth';
 
 import {
   BrowserRouter as Router,
@@ -14,25 +14,14 @@ import Login from './Login';
 
 const config = {
   appId: "1:1096449099:web:771193a7a07667083761ce",
-  apiKey: "",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   projectId: "cool-react-game",
   authDomain: "cool-react-game.firebaseapp.com",
 };
 
-console.log(config);
-
 const App = () => (
   <div className="app">
     <FirebaseAuthProvider firebase={firebase} {...config}>
-      <FirebaseAuthConsumer>
-      {({ isSignedIn, user, providerId }) => {
-    return (
-      <pre style={{ height: 300, overflow: "auto" }}>
-        {JSON.stringify({ isSignedIn, user, providerId }, null, 2)}
-      </pre>
-    );
-  }}
-      </FirebaseAuthConsumer>
       <Router>
         <nav>
           <Link to='/'>Home</Link>
