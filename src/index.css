@@ -24,3 +24,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+table.board {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.board td {
+    border: 1px solid black;
+    height: 30px;
+}
+
+table.board td.c1 { background-color: yellow; }
+table.board td.c2 { background-color: blue; }
+table.board td.c3 { background-color: red; }
