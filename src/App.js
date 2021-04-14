@@ -1,7 +1,4 @@
-import firebase from "firebase/app";
-import "firebase/auth";
-import { FirebaseAuthProvider } from '@react-firebase/auth';
-
+import React from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -9,35 +6,43 @@ import {
   Link
 } from "react-router-dom";
 
+import Firebase from './firebase';
 import Home from './Home';
 import Login from './Login';
+import Navigation from './Navigation';
 
-const config = {
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  projectId: "cool-react-game",
-  authDomain: "cool-react-game.firebaseapp.com",
-};
+class App extends React.Component {
 
-const App = () => (
-  <div className="app">
-    <FirebaseAuthProvider firebase={firebase} {...config}>
-      <Router>
-        <nav>
-          <Link to='/'>Home</Link>
-          <Link to='/login'>Login</Link>
-        </nav>
-        <Switch>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
-      </Router>
-    </FirebaseAuthProvider>
-  </div>
-);
+    constructor(props) {
+        super(props);
+        this.state = {
+            user: undefined
+        };
+    }
+
+    componentDidMount() {
+        Firebase.auth().onAuthStateChanged(user => this.setState({ user }));
+    }
+
+    render() {
+        const { user } = this.state;
+        return (
+            <div className="app">
+                <Router>
+                  <Navigation user={user} />
+                  <Switch>
+                    <Route path="/">
+                      <Home />
+                    </Route>
+                    {user === null &&
+                    <Route path="/login">
+                      <Login />
+                    </Route>}
+                  </Switch>
+                </Router>
+            </div>
+        );
+   }
+}
 
 export default App;
