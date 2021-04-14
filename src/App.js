@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import Firebase from './firebase';
+import Game from './Game';
 import Home from './Home';
 import Login from './Login';
 import Navigation from './Navigation';
@@ -31,13 +32,16 @@ class App extends React.Component {
                 <Router>
                   <Navigation user={user} />
                   <Switch>
-                    <Route path="/">
-                      <Home />
+                    <Route path="/game">
+                      <Game />
                     </Route>
                     {user === null &&
                     <Route path="/login">
                       <Login />
                     </Route>}
+                    <Route path="/">
+                      <Home />
+                    </Route>
                   </Switch>
                 </Router>
             </div>
