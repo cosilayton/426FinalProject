@@ -25,14 +25,23 @@ code {
     monospace;
 }
 
+.controls {
+  position: absolute;
+  top: 5px;
+  left: 200px;
+}
+
 table.board {
-    width: 100%;
-    border-collapse: collapse;
+  border-collapse: collapse;
+  position: absolute;
+  margin: auto;
+  bottom: 20px;
 }
 
 table.board td {
-    border: 1px solid black;
-    height: 30px;
+  border: 1px solid black;
+  height: 30px;
+  width: 30px;
 }
 
 table.board td.c1 { background-color: yellow; }

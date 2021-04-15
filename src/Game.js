@@ -5,8 +5,8 @@ const SHAPES = {
     BAR_2_1: 2
 };
 
-const BOARD_WIDTH = 70;
-const BOARD_HEIGHT = 30;
+const BOARD_WIDTH = 30;
+const BOARD_HEIGHT = 20;
 
 const TICK_EVERY_MS = 1500;
 
@@ -73,11 +73,24 @@ class Game extends React.Component {
 
     render() {
         const { board, started, paused } = this.state;
+        const can = {
+            start: !started,
+            pause: started && !paused,
+            resume: paused
+        };
         return (
             <div>
-                <button onClick={this.start} disabled={started}>Start</button>
-                <button onClick={this.pause} disabled={!started || paused}>Pause</button>
-                <button onClick={this.resume} disabled={!started || !paused}>Resume</button>
+                <div className='controls'>
+                    <button onClick={this.start} disabled={!can.start}>
+                        Start
+                    </button>
+                    <button onClick={this.pause} disabled={!can.pause}>
+                        Pause
+                    </button>
+                    <button onClick={this.resume} disabled={!can.resume}>
+                        Resume
+                    </button>
+                </div>
                 <table className='board'>
                   <tbody>
                     {board.map((row, j) => (
