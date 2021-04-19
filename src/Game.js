@@ -5,8 +5,8 @@ const SHAPES = {
     BAR_2_1: 2
 };
 
-const BOARD_WIDTH = 30;
-const BOARD_HEIGHT = 20;
+const BOARD_WIDTH = 20;
+const BOARD_HEIGHT = 10;
 
 const TICK_EVERY_MS = 1500;
 

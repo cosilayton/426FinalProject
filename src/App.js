@@ -1,9 +1,10 @@
 import React from 'react';
 import {
   BrowserRouter as Router,
-  Switch,
+  Link,
+  Redirect,
   Route,
-  Link
+  Switch
 } from "react-router-dom";
 
 import Firebase from './firebase';
@@ -25,20 +26,23 @@ class App extends React.Component {
         Firebase.auth().onAuthStateChanged(user => this.setState({ user }));
     }
 
+    onLogout() {
+        Firebase.auth().signOut();
+    }
+
     render() {
         const { user } = this.state;
         return (
             <div className="app">
                 <Router>
-                  <Navigation user={user} />
+                  <Navigation user={user} onLogout={this.onLogout} />
                   <Switch>
                     <Route path="/game">
                       <Game />
                     </Route>
-                    {user === null &&
                     <Route path="/login">
-                      <Login />
-                    </Route>}
+                      {user ? <Redirect to='/' /> : <Login />}
+                    </Route>
                     <Route path="/">
                       <Home />
                     </Route>
