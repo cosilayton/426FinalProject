@@ -15,6 +15,9 @@ const SHAPES = {
     ]
 };
 
+const COLORS_COUNT = 4;
+const SHAPE_TYPES = Object.keys(SHAPES);
+
 const BOARD_WIDTH = 20;
 const BOARD_HEIGHT = 10;
 
@@ -56,6 +59,11 @@ class Game extends React.Component {
         clearInterval(this.intervalId);
     }
 
+    // Color of a new shape
+    randomColor() {
+        return 1 + getRandomInt(COLORS_COUNT - 1);
+    }
+
     // Calculate initial x coord for a new shape, starting from 0.
     initialPosition(shapeType) {
         const shape = SHAPES[shapeType];
@@ -63,21 +71,9 @@ class Game extends React.Component {
         return getRandomInt(BOARD_WIDTH - shapeWidth + 1);
     }
 
-    nextBlock() {
-        const { board } = this.state;
-
-        // TODO: random selection for block type & color
-        const shapeType = 'SQUARE_2_2';
-
-        const currentBlock = {
-            shape: shapeType,
-            color: 1,
-            x: this.initialPosition(shapeType),
-            y: 0
-        };
-        console.log(currentBlock);
-        const { x, y, color } = currentBlock;
-
+    // Render the block or clear it.
+    renderBlock(board, currentBlock, color) {
+        const { x, y } = currentBlock;
         const rows = SHAPES[currentBlock.shape];
         for (var i = 0; i < rows.length; i++) {
             const row = rows[i];
@@ -87,7 +83,20 @@ class Game extends React.Component {
                 }
             }
         }
-        console.log(board);
+    }
+
+    nextBlock() {
+        const { board } = this.state;
+        const shapeTypeIdx = getRandomInt(SHAPE_TYPES.length);
+        const shapeType = SHAPE_TYPES[shapeTypeIdx];
+
+        const currentBlock = {
+            shape: shapeType,
+            color: this.randomColor(),
+            x: this.initialPosition(shapeType),
+            y: 0
+        };
+        this.renderBlock(board, currentBlock, currentBlock.color);
         this.setState({ board, currentBlock });
     }
 

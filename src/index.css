@@ -47,3 +47,6 @@ table.board td {
 table.board td.c1 { background-color: yellow; }
 table.board td.c2 { background-color: blue; }
 table.board td.c3 { background-color: red; }
+table.board td.c4 { background-color: green; }
+
+
