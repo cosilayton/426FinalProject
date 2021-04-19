@@ -28,7 +28,7 @@ code {
 .controls {
   position: absolute;
   top: 5px;
-  left: 200px;
+  right: 20px;
 }
 
 table.board {

@@ -1,8 +1,18 @@
 import React from 'react';
 
 const SHAPES = {
-    SQUARE_2_2: 1,
-    BAR_2_1: 2
+    SQUARE_2_2: [
+        [ 'x', 'x' ],
+        [ 'x', 'x' ]
+    ],
+    BAR_1_3: [
+        [ 'x', 'x', 'x' ]
+    ],
+    L_3_2: [
+        [ 'x', ' ' ],
+        [ 'x', ' ' ],
+        [ 'x', 'x' ]
+    ]
 };
 
 const BOARD_WIDTH = 20;
@@ -22,6 +32,13 @@ const EMPTY_BOARD = () => {
     return board;
 }
 
+const NO_BLOCK = { shape: null, color: null, x: null, y: null };
+
+// Getting a random number between 0 (inclusive) and max (exclusive)
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
 class Game extends React.Component {
 
     constructor(props) {
@@ -30,8 +47,7 @@ class Game extends React.Component {
             started: false,
             paused: false,
             board: EMPTY_BOARD(),
-            currentBlock: null
-            // { color: 1, shape: SHAPES.SQUARE_2_2 }
+            currentBlock: NO_BLOCK
         };
 
     }
@@ -40,14 +56,39 @@ class Game extends React.Component {
         clearInterval(this.intervalId);
     }
 
+    // Calculate initial x coord for a new shape, starting from 0.
+    initialPosition(shapeType) {
+        const shape = SHAPES[shapeType];
+        const shapeWidth = shape[0].length;
+        return getRandomInt(BOARD_WIDTH - shapeWidth + 1);
+    }
+
     nextBlock() {
         const { board } = this.state;
-        // SQUARE_2_2
-        board[0][0] = '1';
-        board[0][1] = '1';
-        board[1][0] = '1';
-        board[1][1] = '1';
-        this.setState({ board });
+
+        // TODO: random selection for block type & color
+        const shapeType = 'SQUARE_2_2';
+
+        const currentBlock = {
+            shape: shapeType,
+            color: 1,
+            x: this.initialPosition(shapeType),
+            y: 0
+        };
+        console.log(currentBlock);
+        const { x, y, color } = currentBlock;
+
+        const rows = SHAPES[currentBlock.shape];
+        for (var i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            for (var j = 0; j < row.length; j++) {
+                if (row[j] !== ' ') {
+                    board[y + i][x + j] = color;
+                }
+            }
+        }
+        console.log(board);
+        this.setState({ board, currentBlock });
     }
 
     start = () => {
