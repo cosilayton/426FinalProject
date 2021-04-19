@@ -22,13 +22,14 @@ const BOARD_WIDTH = 20;
 const BOARD_HEIGHT = 10;
 
 const TICK_EVERY_MS = 1500;
+const BLANK_SPACE = ' ';
 
 const EMPTY_BOARD = () => {
     const board = [];
     for (let i = 0; i < BOARD_HEIGHT; i++) {
         const row = [];
         for (let j = 0; j < BOARD_WIDTH; j++) {
-            row[j] = ' ';
+            row[j] = BLANK_SPACE;
         }
         board.push(row);
     }
@@ -42,10 +43,13 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
+// React.Component not a React.PureComponent, so that it re-renders when we
+// update the 'board' and 'currentBlock' in-place.
 class Game extends React.Component {
 
     constructor(props) {
         super(props);
+
         this.state = {
             started: false,
             paused: false,
@@ -53,10 +57,14 @@ class Game extends React.Component {
             currentBlock: NO_BLOCK
         };
 
+        // additional fields, not part of component's React state
+        this.intervalId = null;
+        this.keyboardEnabled = false;
     }
 
     componentWillUnmount() {
         clearInterval(this.intervalId);
+        this.disableKeyboard();
     }
 
     // Color of a new shape
@@ -85,11 +93,18 @@ class Game extends React.Component {
         }
     }
 
+    moveBlock() {
+        const { board, currentBlock } = this.state;
+        this.renderBlock(board, currentBlock, BLANK_SPACE);
+        currentBlock.y += 1;
+        this.renderBlock(board, currentBlock, currentBlock.color);
+        this.setState({ board, currentBlock });
+    }
+
     nextBlock() {
         const { board } = this.state;
         const shapeTypeIdx = getRandomInt(SHAPE_TYPES.length);
         const shapeType = SHAPE_TYPES[shapeTypeIdx];
-
         const currentBlock = {
             shape: shapeType,
             color: this.randomColor(),
@@ -104,21 +119,54 @@ class Game extends React.Component {
         this.setState({ started: true });
         this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
         this.nextBlock();
+        this.enableKeyboard();
     }
 
     pause = () => {
         clearInterval(this.intervalId);
         this.intervalId = null;
         this.setState({ paused: true });
+        this.disableKeyboard();
     }
 
     resume = () => {
         this.setState({ paused: false });
         this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
+        this.enableKeyboard();
+    }
+
+    onKeyDown = (e) => {
+        if (e.code === 'Space' || e.key === ' ') {
+            // TODO: rotate the block
+        }
+        if (e.code === 'ArrowLeft' || e.key === 'ArrowLeft') {
+            // TODO: moveBlockLeft
+        }
+        if (e.code === 'ArrowRight' || e.key === 'ArrowRight') {
+            // TODO: moveBlockRight
+        }
+        if (e.code === 'ArrowRight' || e.key === 'ArrowRight') {
+            // TODO: moveBlockRight
+        }
+        if (e.code === 'ArrowDown' || e.key === 'ArrowDown') {
+            // TODO: drop the block
+        }
+    }
+
+    enableKeyboard() {
+        this.keyboardEnabled = true;
+        window.addEventListener("keydown", this.onKeyDown);
+    }
+
+    disableKeyboard() {
+        if (this.keyboardEnabled) {
+            window.removeEventListener("keydown", this.onKeyDown);
+        }
+        this.keyboardEnabled = false;
     }
 
     tick = () => {
-        console.log('tick');
+        this.moveBlock();
     }
 
     render() {
