@@ -24,7 +24,7 @@ class App extends React.Component {
 
     componentDidMount() {
         Firebase.auth().onAuthStateChanged(user => {
-            console.log('auth changed to:', user);
+            // console.log('auth changed to:', user);
             this.setState({ user });
         });
     }

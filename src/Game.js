@@ -19,7 +19,8 @@ const COLORS_COUNT = 4;
 const SHAPE_TYPES = Object.keys(SHAPES);
 
 const BOARD_WIDTH = 10;
-const BOARD_HEIGHT = 15;
+const BOARD_HEIGHT = 8;
+// const BOARD_HEIGHT = 15;
 
 const TICK_EVERY_MS = 1500;
 const BLANK_SPACE = ' ';
@@ -93,6 +94,22 @@ class Game extends React.Component {
         }
     }
 
+    // Render the block or clear it.
+    canRenderAt(board, block, x, y) {
+        const rows = SHAPES[block.shape];
+        for (var i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            for (var j = 0; j < row.length; j++) {
+                if (row[j] !== ' ') {
+                    if (board[y + i][x + j] !== BLANK_SPACE) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     nextBlock() {
         const { board } = this.state;
         const shapeTypeIdx = getRandomInt(SHAPE_TYPES.length);
@@ -127,46 +144,53 @@ class Game extends React.Component {
         this.enableKeyboard();
     }
 
+    // Move the block by desired [deltaX, deltaY], but check whether the target
+    // space is not occupied by other blocks.
     moveBlock(deltaX, deltaY) {
         const { board, currentBlock } = this.state;
+        let moved = true;
+
+        // clear myself in order to check for the new position availability
         this.renderBlock(board, currentBlock, BLANK_SPACE);
-        currentBlock.x += deltaX;
-        currentBlock.y += deltaY;
-        this.renderBlock(board, currentBlock, currentBlock.color);
-        this.setState({ board, currentBlock });
+        const x = currentBlock.x + deltaX;
+        const y = currentBlock.y + deltaY;
+        if (this.canRenderAt(board, currentBlock, x, y)) {
+            console.log('movement allowed');
+            currentBlock.x = x;
+            currentBlock.y = y;
+            this.renderBlock(board, currentBlock, currentBlock.color);
+            this.setState({ board, currentBlock });
+        } else {
+            console.log('movement not allowed');
+            // move was not legal, put ourselves back on the board
+            this.renderBlock(board, currentBlock, currentBlock.color);
+            moved = false;
+        }
+        return moved;
     }
 
     moveBlockDown() {
-        const { board, currentBlock } = this.state;
+        const { currentBlock } = this.state;
         const shapeType = currentBlock.shape;
         const shape = SHAPES[shapeType];
         const shapeHeight = shape.length;
-        const canMove = (currentBlock.y + shapeHeight < BOARD_HEIGHT);
-        if (canMove) {
-            this.moveBlock(0, +1);
-        }
-        return canMove;
+        const boundsCheck = (currentBlock.y + shapeHeight < BOARD_HEIGHT);
+        return boundsCheck && this.moveBlock(0, +1);
     }
 
     moveBlockLeft() {
-        const { board, currentBlock } = this.state;
-        const canMove = (currentBlock.x > 0);
-        if (canMove) {
-            this.moveBlock(-1, 0);
-        }
-        return canMove;
+        const { currentBlock } = this.state;
+        const boundsCheck = (currentBlock.x > 0);
+        return boundsCheck && this.moveBlock(-1, 0);
     }
 
     moveBlockRight() {
-        const { board, currentBlock } = this.state;
+        const { currentBlock } = this.state;
         const shapeType = currentBlock.shape;
         const shape = SHAPES[shapeType];
         const shapeWidth = shape[0].length;
-        const canMove = (currentBlock.x + shapeWidth < BOARD_WIDTH);
-        if (canMove) {
-            this.moveBlock(+1, 0);
-        }
-        return canMove;
+        const boundsCheck = (currentBlock.x + shapeWidth < BOARD_WIDTH);
+        return boundsCheck && this.moveBlock(+1, 0);
     }
 
     onKeyDown = (e) => {
