@@ -11,6 +11,7 @@ import Game from './Game';
 import Home from './Home';
 import Login from './Login';
 import Navigation from './Navigation';
+import SignUp from './SignUp'
 
 class App extends React.Component {
 
@@ -22,7 +23,10 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        Firebase.auth().onAuthStateChanged(user => this.setState({ user }));
+        Firebase.auth().onAuthStateChanged(user => {
+            console.log('auth changed to:', user);
+            this.setState({ user });
+        });
     }
 
     onLogout() {
@@ -41,6 +45,9 @@ class App extends React.Component {
                     </Route>
                     <Route path="/login">
                       {user ? <Redirect to='/' /> : <Login />}
+                    </Route>
+                    <Route path="/signup">
+                      {user ? <Redirect to='/' /> : <SignUp />}
                     </Route>
                     <Route path="/">
                       <Home />
