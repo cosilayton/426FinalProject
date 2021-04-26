@@ -18,8 +18,8 @@ const SHAPES = {
 const COLORS_COUNT = 4;
 const SHAPE_TYPES = Object.keys(SHAPES);
 
-const BOARD_WIDTH = 20;
-const BOARD_HEIGHT = 10;
+const BOARD_WIDTH = 10;
+const BOARD_HEIGHT = 15;
 
 const TICK_EVERY_MS = 1500;
 const BLANK_SPACE = ' ';
@@ -93,14 +93,6 @@ class Game extends React.Component {
         }
     }
 
-    moveBlock() {
-        const { board, currentBlock } = this.state;
-        this.renderBlock(board, currentBlock, BLANK_SPACE);
-        currentBlock.y += 1;
-        this.renderBlock(board, currentBlock, currentBlock.color);
-        this.setState({ board, currentBlock });
-    }
-
     nextBlock() {
         const { board } = this.state;
         const shapeTypeIdx = getRandomInt(SHAPE_TYPES.length);
@@ -135,15 +127,57 @@ class Game extends React.Component {
         this.enableKeyboard();
     }
 
+    moveBlock(deltaX, deltaY) {
+        const { board, currentBlock } = this.state;
+        this.renderBlock(board, currentBlock, BLANK_SPACE);
+        currentBlock.x += deltaX;
+        currentBlock.y += deltaY;
+        this.renderBlock(board, currentBlock, currentBlock.color);
+        this.setState({ board, currentBlock });
+    }
+
+    moveBlockDown() {
+        const { board, currentBlock } = this.state;
+        const shapeType = currentBlock.shape;
+        const shape = SHAPES[shapeType];
+        const shapeHeight = shape.length;
+        const canMove = (currentBlock.y + shapeHeight < BOARD_HEIGHT);
+        if (canMove) {
+            this.moveBlock(0, +1);
+        }
+        return canMove;
+    }
+
+    moveBlockLeft() {
+        const { board, currentBlock } = this.state;
+        const canMove = (currentBlock.x > 0);
+        if (canMove) {
+            this.moveBlock(-1, 0);
+        }
+        return canMove;
+    }
+
+    moveBlockRight() {
+        const { board, currentBlock } = this.state;
+        const shapeType = currentBlock.shape;
+        const shape = SHAPES[shapeType];
+        const shapeWidth = shape[0].length;
+        const canMove = (currentBlock.x + shapeWidth < BOARD_WIDTH);
+        if (canMove) {
+            this.moveBlock(+1, 0);
+        }
+        return canMove;
+    }
+
     onKeyDown = (e) => {
         if (e.code === 'Space' || e.key === ' ') {
             // TODO: rotate the block
         }
         if (e.code === 'ArrowLeft' || e.key === 'ArrowLeft') {
-            // TODO: moveBlockLeft
+            this.moveBlockLeft();
         }
         if (e.code === 'ArrowRight' || e.key === 'ArrowRight') {
-            // TODO: moveBlockRight
+            this.moveBlockRight();
         }
         if (e.code === 'ArrowRight' || e.key === 'ArrowRight') {
             // TODO: moveBlockRight
@@ -166,7 +200,11 @@ class Game extends React.Component {
     }
 
     tick = () => {
-        this.moveBlock();
+        if (this.moveBlockDown()) {
+        } else {
+            console.log('could not move, next block');
+            this.nextBlock();
+        }
     }
 
     render() {
