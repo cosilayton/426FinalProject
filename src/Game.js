@@ -19,8 +19,7 @@ const COLORS_COUNT = 4;
 const SHAPE_TYPES = Object.keys(SHAPES);
 
 const BOARD_WIDTH = 10;
-const BOARD_HEIGHT = 8;
-// const BOARD_HEIGHT = 15;
+const BOARD_HEIGHT = 15;
 
 const TICK_EVERY_MS = 1500;
 const BLANK_SPACE = ' ';
@@ -64,7 +63,7 @@ class Game extends React.Component {
     }
 
     componentWillUnmount() {
-        clearInterval(this.intervalId);
+        this.intervalId && clearInterval(this.intervalId);
         this.disableKeyboard();
     }
 
@@ -120,19 +119,25 @@ class Game extends React.Component {
             x: this.initialPosition(shapeType),
             y: 0
         };
-        this.renderBlock(board, currentBlock, currentBlock.color);
-        this.setState({ board, currentBlock });
+        const { x, y } = currentBlock;
+        const canPlace = this.canRenderAt(board, currentBlock, x, y);
+        console.log('nextBlock canPlace:', canPlace);
+        if (canPlace) {
+            this.renderBlock(board, currentBlock, currentBlock.color);
+            this.setState({ board, currentBlock });
+        }
+        return canPlace;
     }
 
     start = () => {
-        this.setState({ started: true });
+        this.setState({ started: true, board: EMPTY_BOARD() });
         this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
         this.nextBlock();
         this.enableKeyboard();
     }
 
     pause = () => {
-        clearInterval(this.intervalId);
+        this.intervalId && clearInterval(this.intervalId);
         this.intervalId = null;
         this.setState({ paused: true });
         this.disableKeyboard();
@@ -203,9 +208,6 @@ class Game extends React.Component {
         if (e.code === 'ArrowRight' || e.key === 'ArrowRight') {
             this.moveBlockRight();
         }
-        if (e.code === 'ArrowRight' || e.key === 'ArrowRight') {
-            // TODO: moveBlockRight
-        }
         if (e.code === 'ArrowDown' || e.key === 'ArrowDown') {
             // TODO: drop the block
         }
@@ -223,11 +225,21 @@ class Game extends React.Component {
         this.keyboardEnabled = false;
     }
 
+    gameOver() {
+        clearInterval(this.intervalId)
+        this.intervalId = null;
+        this.disableKeyboard();
+        this.setState({ started: false });
+        alert('Game Over!');
+    }
+
     tick = () => {
         if (this.moveBlockDown()) {
         } else {
             console.log('could not move, next block');
-            this.nextBlock();
+            if (!this.nextBlock()) {
+                this.gameOver();
+            }
         }
     }
 
