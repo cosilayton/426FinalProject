@@ -5,14 +5,28 @@ const SHAPES = {
         [ 'x', 'x' ],
         [ 'x', 'x' ]
     ],
-    BAR_1_3: [
+    BAR_3_1: [
         [ 'x', 'x', 'x' ]
     ],
-    L_3_2: [
+    E_3_2: [
+        [ ' ', 'x', ' ' ],
+        [ 'x', 'x', 'x' ]
+    ],
+    L_2_3: [
         [ 'x', ' ' ],
         [ 'x', ' ' ],
         [ 'x', 'x' ]
+    ],
+    L_2_2: [
+        [ 'x', ' ' ],
+        [ 'x', 'x' ]
     ]
+};
+
+const STYLES = {
+    BOARD: {
+        backgroundImage: 'url(/wood2.png)'
+   }
 };
 
 const COLORS_COUNT = 4;
@@ -244,6 +258,10 @@ class Game extends React.Component {
         }
     }
 
+    cellClassName = (color) => {
+        return color === BLANK_SPACE ? '' :`c c${color}`;
+    }
+
     render() {
         const { board, started, paused } = this.state;
         const can = {
@@ -264,10 +282,12 @@ class Game extends React.Component {
                         Resume
                     </button>
                 </div>
-                <table className='board' style={{ backgroundImage: 'url(/wood2.png)' }}>
+                <table className='board' style={STYLES.BOARD}>
                   <tbody>
                     {board.map((row, j) => (
-                        <tr key={j}>{row.map((color, i) => (<td key={i} className={`c${color}`}></td>))}</tr>
+                        <tr key={j}>{row.map((color, i) => (
+                            <td key={i} className={this.cellClassName(color)}></td>
+                        ))}</tr>
                     ))}
                   </tbody>
                 </table>

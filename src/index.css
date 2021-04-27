@@ -46,11 +46,8 @@ table.board td {
   border: 1px solid transparent;
 }
 
-table.board td.c1,
-table.board td.c2,
-table.board td.c3,
-table.board td.c4 {
-  border-color: black !important;
+table.board td.c {
+  border-color: black;
 }
 
 table.board td.c1 { background-color: yellow; }
