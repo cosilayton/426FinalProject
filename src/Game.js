@@ -35,7 +35,7 @@ const SHAPE_TYPES = Object.keys(SHAPES);
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 15;
 
-//const TICK_EVERY_MS = 1500;
+const DROP_EVERY_MS = 100;
 const TICK_EVERY_MS = 500;
 const BLANK_SPACE = ' ';
 
@@ -68,6 +68,7 @@ class Game extends React.Component {
         this.state = {
             started: false,
             paused: false,
+            dropping: false,
             board: EMPTY_BOARD(),
             currentBlock: NO_BLOCK
         };
@@ -75,6 +76,12 @@ class Game extends React.Component {
         // additional fields, not part of component's React state
         this.intervalId = null;
         this.keyboardEnabled = false;
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (!prevState.started && this.state.started) {
+            this.started();
+        }
     }
 
     componentWillUnmount() {
@@ -136,7 +143,6 @@ class Game extends React.Component {
         };
         const { x, y } = currentBlock;
         const canPlace = this.canRenderAt(board, currentBlock, x, y);
-        console.log('nextBlock canPlace:', canPlace);
         if (canPlace) {
             this.renderBlock(board, currentBlock, currentBlock.color);
             this.setState({ board, currentBlock });
@@ -146,6 +152,9 @@ class Game extends React.Component {
 
     start = () => {
         this.setState({ started: true, board: EMPTY_BOARD() });
+    }
+
+    started = () => {
         this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
         this.nextBlock();
         this.enableKeyboard();
@@ -160,7 +169,11 @@ class Game extends React.Component {
 
     resume = () => {
         this.setState({ paused: false });
-        this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
+        if (this.state.dropping) {
+            this.intervalId = setInterval(this.drop, DROP_EVERY_MS);
+        } else {
+            this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
+        }
         this.enableKeyboard();
     }
 
@@ -175,13 +188,11 @@ class Game extends React.Component {
         const x = currentBlock.x + deltaX;
         const y = currentBlock.y + deltaY;
         if (this.canRenderAt(board, currentBlock, x, y)) {
-            console.log('movement allowed');
             currentBlock.x = x;
             currentBlock.y = y;
             this.renderBlock(board, currentBlock, currentBlock.color);
             this.setState({ board, currentBlock });
         } else {
-            console.log('movement not allowed');
             // move was not legal, put ourselves back on the board
             this.renderBlock(board, currentBlock, currentBlock.color);
             moved = false;
@@ -198,13 +209,19 @@ class Game extends React.Component {
         return boundsCheck && this.moveBlock(0, +1);
     }
 
-    moveBlockLeft() {
+    dropBlock = () => {
+        clearInterval(this.intervalId);
+        this.intervalId = setInterval(this.drop, DROP_EVERY_MS);
+        this.setState({ dropping: true });
+    }
+
+    moveBlockLeft = () => {
         const { currentBlock } = this.state;
         const boundsCheck = (currentBlock.x > 0);
         return boundsCheck && this.moveBlock(-1, 0);
     }
 
-    moveBlockRight() {
+    moveBlockRight = () => {
         const { currentBlock } = this.state;
         const shapeType = currentBlock.shape;
         const shape = SHAPES[shapeType];
@@ -214,9 +231,6 @@ class Game extends React.Component {
     }
 
     onKeyDown = (e) => {
-        if (e.code === 'Space' || e.key === ' ') {
-            // TODO: rotate the block
-        }
         if (e.code === 'ArrowLeft' || e.key === 'ArrowLeft') {
             this.moveBlockLeft();
         }
@@ -224,7 +238,7 @@ class Game extends React.Component {
             this.moveBlockRight();
         }
         if (e.code === 'ArrowDown' || e.key === 'ArrowDown') {
-            // TODO: drop the block
+            this.dropBlock();
         }
     }
 
@@ -248,10 +262,16 @@ class Game extends React.Component {
         alert('Game Over!');
     }
 
+    drop = () => {
+        if (!this.moveBlockDown()) {
+            clearInterval(this.intervalId);
+            this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
+            this.setState({ dropping: false });
+        }
+    }
+
     tick = () => {
-        if (this.moveBlockDown()) {
-        } else {
-            console.log('could not move, next block');
+        if (!this.moveBlockDown()) {
             if (!this.nextBlock()) {
                 this.gameOver();
             }
@@ -267,11 +287,21 @@ class Game extends React.Component {
         const can = {
             start: !started,
             pause: started && !paused,
+            play: started && !paused,
             resume: paused
         };
         return (
             <div className='game'>
                 <div className='controls'>
+                    <button onClick={this.moveBlockLeft} disabled={!can.play}>
+                        Left
+                    </button>
+                    <button onClick={this.moveBlockRight} disabled={!can.play}>
+                        Right
+                    </button>
+                    <button onClick={this.dropBlock} disabled={!can.play}>
+                        Drop
+                    </button>
                     <button onClick={this.start} disabled={!can.start}>
                         Start
                     </button>
