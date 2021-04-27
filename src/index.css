@@ -31,17 +31,26 @@ code {
   right: 20px;
 }
 
+
 table.board {
   border-collapse: collapse;
   position: absolute;
   margin: auto;
   bottom: 20px;
+  background-repeat: repeat;
 }
 
 table.board td {
-  border: 1px solid black;
   height: 30px;
   width: 30px;
+  border: 1px solid transparent;
+}
+
+table.board td.c1,
+table.board td.c2,
+table.board td.c3,
+table.board td.c4 {
+  border-color: black !important;
 }
 
 table.board td.c1 { background-color: yellow; }

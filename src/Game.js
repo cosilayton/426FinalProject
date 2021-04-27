@@ -21,7 +21,8 @@ const SHAPE_TYPES = Object.keys(SHAPES);
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 15;
 
-const TICK_EVERY_MS = 1500;
+//const TICK_EVERY_MS = 1500;
+const TICK_EVERY_MS = 500;
 const BLANK_SPACE = ' ';
 
 const EMPTY_BOARD = () => {
@@ -69,7 +70,7 @@ class Game extends React.Component {
 
     // Color of a new shape
     randomColor() {
-        return 1 + getRandomInt(COLORS_COUNT - 1);
+        return 1 + getRandomInt(COLORS_COUNT);
     }
 
     // Calculate initial x coord for a new shape, starting from 0.
@@ -251,7 +252,7 @@ class Game extends React.Component {
             resume: paused
         };
         return (
-            <div>
+            <div className='game'>
                 <div className='controls'>
                     <button onClick={this.start} disabled={!can.start}>
                         Start
@@ -263,7 +264,7 @@ class Game extends React.Component {
                         Resume
                     </button>
                 </div>
-                <table className='board'>
+                <table className='board' style={{ backgroundImage: 'url(/wood2.png)' }}>
                   <tbody>
                     {board.map((row, j) => (
                         <tr key={j}>{row.map((color, i) => (<td key={i} className={`c${color}`}></td>))}</tr>
