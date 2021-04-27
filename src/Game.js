@@ -12,8 +12,7 @@ const SHAPES = {
         [ 'x' ],
         [ 'x' ],
         [ 'x' ]
-    ]
-    /*
+    ],
     E_3_2: [
         [ ' ', 'x', ' ' ],
         [ 'x', 'x', 'x' ]
@@ -27,7 +26,6 @@ const SHAPES = {
         [ 'x', ' ' ],
         [ 'x', 'x' ]
     ]
-    */
 };
 
 const STYLES = {
@@ -46,14 +44,18 @@ const DROP_EVERY_MS = 100;
 const TICK_EVERY_MS = 500;
 const BLANK_SPACE = ' ';
 
+const EMPTY_ROW = () => {
+    const row = [];
+    for (let j = 0; j < BOARD_WIDTH; j++) {
+        row[j] = BLANK_SPACE;
+    }
+    return row;
+}
+
 const EMPTY_BOARD = () => {
     const board = [];
     for (let i = 0; i < BOARD_HEIGHT; i++) {
-        const row = [];
-        for (let j = 0; j < BOARD_WIDTH; j++) {
-            row[j] = BLANK_SPACE;
-        }
-        board.push(row);
+        board.push(EMPTY_ROW());
     }
     return board;
 }
@@ -270,40 +272,64 @@ class Game extends React.Component {
     }
 
     clearRow(board, rowIdx) {
-        console.log('clearing row', rowIdx);
         for (var i = 0; i < board[rowIdx].length; i++) {
             board[rowIdx][i] = BLANK_SPACE;
         }
     }
 
     isRowFull(board, rowIdx) {
-        console.log('checking if', rowIdx, 'is full');
         for (var i = 0; i < board[rowIdx].length; i++) {
             if (board[rowIdx][i] === BLANK_SPACE) {
                 return false;
             }
         }
-        console.log('the row is full!');
         return true;
     }
 
+    // Move the rows down by shifting the array rows. Insert a blank row
+    // into the 1st position.
+    moveRowsDown(board, targetRowIdx) {
+        for (var row = targetRowIdx; row > 0; row--) {
+            board[row] = board[row - 1];
+        }
+        board[0] = EMPTY_ROW();
+    }
+
     // We just placed a block. Check if any rows can be cleared:
+    // - start from the bottom row
+    // - if the row is not full, move up to the next row
+    // - if the row is full:
+    //   - if it's the 1st row, clear it
+    //   - otherwise move all rows above it down by 1 field and keep checking
+    //     from the same row idx
     clearRows() {
-        console.log('clearRows!');
         const { board, currentBlock } = this.state;
         const shapeType = currentBlock.shape;
         const shape = SHAPES[shapeType];
         const shapeHeight = shape.length;
-        let anyCleared = false;
+
+        let shouldClear = false;
         for (var i = 0; i < shapeHeight; i++) {
             const rowIdx = currentBlock.y + i;
             if (this.isRowFull(board, rowIdx)) {
-                this.clearRow(board, rowIdx);
-                anyCleared = true;
+                shouldClear = true;
             }
         }
-        if (anyCleared) {
-            this.setState({ board });
+        if (shouldClear) {
+            let rowIdx = currentBlock.y + shapeHeight - 1;
+            while (rowIdx >= 0) {
+                if (!this.isRowFull(board, rowIdx)) {
+                    rowIdx--;
+                } else {
+                    if (rowIdx === 0) {
+                        this.clearRow(board, rowIdx);
+                        rowIdx--;
+                    } else {
+                        this.moveRowsDown(board, rowIdx);
+                    }
+                }
+                this.setState({ board });
+            }
         }
     }
 
