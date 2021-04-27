@@ -8,6 +8,12 @@ const SHAPES = {
     BAR_3_1: [
         [ 'x', 'x', 'x' ]
     ],
+    BAR_1_3: [
+        [ 'x' ],
+        [ 'x' ],
+        [ 'x' ]
+    ]
+    /*
     E_3_2: [
         [ ' ', 'x', ' ' ],
         [ 'x', 'x', 'x' ]
@@ -21,6 +27,7 @@ const SHAPES = {
         [ 'x', ' ' ],
         [ 'x', 'x' ]
     ]
+    */
 };
 
 const STYLES = {
@@ -262,8 +269,47 @@ class Game extends React.Component {
         alert('Game Over!');
     }
 
+    clearRow(board, rowIdx) {
+        console.log('clearing row', rowIdx);
+        for (var i = 0; i < board[rowIdx].length; i++) {
+            board[rowIdx][i] = BLANK_SPACE;
+        }
+    }
+
+    isRowFull(board, rowIdx) {
+        console.log('checking if', rowIdx, 'is full');
+        for (var i = 0; i < board[rowIdx].length; i++) {
+            if (board[rowIdx][i] === BLANK_SPACE) {
+                return false;
+            }
+        }
+        console.log('the row is full!');
+        return true;
+    }
+
+    // We just placed a block. Check if any rows can be cleared:
+    clearRows() {
+        console.log('clearRows!');
+        const { board, currentBlock } = this.state;
+        const shapeType = currentBlock.shape;
+        const shape = SHAPES[shapeType];
+        const shapeHeight = shape.length;
+        let anyCleared = false;
+        for (var i = 0; i < shapeHeight; i++) {
+            const rowIdx = currentBlock.y + i;
+            if (this.isRowFull(board, rowIdx)) {
+                this.clearRow(board, rowIdx);
+                anyCleared = true;
+            }
+        }
+        if (anyCleared) {
+            this.setState({ board });
+        }
+    }
+
     drop = () => {
         if (!this.moveBlockDown()) {
+            this.clearRows();
             clearInterval(this.intervalId);
             this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
             this.setState({ dropping: false });
@@ -272,6 +318,7 @@ class Game extends React.Component {
 
     tick = () => {
         if (!this.moveBlockDown()) {
+            this.clearRows();
             if (!this.nextBlock()) {
                 this.gameOver();
             }
