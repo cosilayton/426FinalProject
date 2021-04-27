@@ -337,8 +337,12 @@ class Game extends React.Component {
         if (!this.moveBlockDown()) {
             this.clearRows();
             clearInterval(this.intervalId);
-            this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
             this.setState({ dropping: false });
+            if (this.nextBlock()) {
+                this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
+            } else {
+                this.gameOver();
+            }
         }
     }
 
