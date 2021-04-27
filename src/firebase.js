@@ -8,6 +8,6 @@ const CONFIG = {
   authDomain: "cool-react-game.firebaseapp.com",
 };
 
-const app = Firebase.initializeApp(CONFIG);
+const app = CONFIG.apiKey ? Firebase.initializeApp(CONFIG) : null;
 
 export default app;

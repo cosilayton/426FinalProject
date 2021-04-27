@@ -23,21 +23,21 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        Firebase.auth().onAuthStateChanged(user => {
+        Firebase && Firebase.auth().onAuthStateChanged(user => {
             // console.log('auth changed to:', user);
             this.setState({ user });
         });
     }
 
     onLogout() {
-        Firebase.auth().signOut();
+        Firebase && Firebase.auth().signOut();
     }
 
     render() {
         const { user } = this.state;
         return (
             <div className="app">
-                <Router>
+                {Firebase && <Router>
                   <Navigation user={user} onLogout={this.onLogout} />
                   <Switch>
                     <Route path="/game">
@@ -53,7 +53,9 @@ class App extends React.Component {
                       <Home />
                     </Route>
                   </Switch>
-                </Router>
+                </Router>}
+                {!Firebase &&
+                <h1>Firebase settings not configured properly!</h1>}
             </div>
         );
    }
