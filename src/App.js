@@ -35,13 +35,14 @@ class App extends React.Component {
 
     render() {
         const { user } = this.state;
+        console.log('user:', user);
         return (
             <div className="app">
                 {Firebase && <Router>
                   <Navigation user={user} onLogout={this.onLogout} />
                   <Switch>
                     <Route path="/game">
-                      <Game />
+                      {user ? <Game /> : <Redirect to='/login' />}
                     </Route>
                     <Route path="/login">
                       {user ? <Redirect to='/' /> : <Login />}
@@ -50,7 +51,7 @@ class App extends React.Component {
                       {user ? <Redirect to='/' /> : <SignUp />}
                     </Route>
                     <Route path="/">
-                      <Home />
+                      <Home user={user} />
                     </Route>
                   </Switch>
                 </Router>}
