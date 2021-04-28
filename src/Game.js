@@ -78,6 +78,7 @@ class Game extends React.Component {
             started: false,
             paused: false,
             dropping: false,
+            score: 0,
             board: EMPTY_BOARD(),
             currentBlock: NO_BLOCK
         };
@@ -160,12 +161,12 @@ class Game extends React.Component {
     }
 
     start = () => {
-        this.setState({ started: true, board: EMPTY_BOARD() });
+        this.setState({ started: true, score: 0, board: EMPTY_BOARD() });
     }
 
     started = () => {
-        this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
         this.nextBlock();
+        this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
         this.enableKeyboard();
     }
 
@@ -307,12 +308,14 @@ class Game extends React.Component {
         const shapeType = currentBlock.shape;
         const shape = SHAPES[shapeType];
         const shapeHeight = shape.length;
+        let { score } = this.state;
 
         let shouldClear = false;
         for (var i = 0; i < shapeHeight; i++) {
             const rowIdx = currentBlock.y + i;
             if (this.isRowFull(board, rowIdx)) {
                 shouldClear = true;
+                score++;
             }
         }
         if (shouldClear) {
@@ -328,8 +331,8 @@ class Game extends React.Component {
                         this.moveRowsDown(board, rowIdx);
                     }
                 }
-                this.setState({ board });
             }
+            this.setState({ board, score });
         }
     }
 
@@ -360,7 +363,7 @@ class Game extends React.Component {
     }
 
     render() {
-        const { board, started, paused } = this.state;
+        const { board, started, paused, score } = this.state;
         const can = {
             start: !started,
             pause: started && !paused,
@@ -370,6 +373,7 @@ class Game extends React.Component {
         return (
             <div className='game'>
                 <div className='controls'>
+                    <span>Score: {score}</span>
                     <button onClick={this.moveBlockLeft} disabled={!can.play}>
                         Left
                     </button>

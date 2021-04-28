@@ -36,7 +36,7 @@ table.board {
   border-collapse: collapse;
   position: absolute;
   margin: auto;
-  bottom: 20px;
+  top: 40px;
   background-repeat: repeat;
 }
 
