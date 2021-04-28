@@ -60,7 +60,9 @@ class SignUp extends React.Component {
                   <input name='password' type='password'
                          value={password} onChange={this.changePassword} />
               </div>
-              <button type='submit' disabled={submitting}>Signup</button>
+              <button type='submit' disabled={submitting}>
+                  {submitting ? 'Signing up...' : 'Signup'}
+              </button>
           </form>
         </section>
       );

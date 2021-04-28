@@ -10,7 +10,8 @@ class Login extends React.Component {
       this.state = {
           email: '',
           password: '',
-          error: ''
+          error: '',
+          submitting: false
       };
   }
 
@@ -18,14 +19,19 @@ class Login extends React.Component {
       const { email, password } = this.state;
       e.preventDefault();
       if ((email !== '') && (password !== '')) {
-          this.setState({ error: '' });
+          this.setState({ error: '', submitting: true });
           Firebase.auth().signInWithEmailAndPassword(email, password)
+              .then(this.onSuccess)
               .catch(this.onError)
       }
   }
 
+  onSuccess = (e) => {
+      this.setState({ submitting: false });
+  }
+
   onError = (e) => {
-      this.setState({ error: 'Invalid credentials' });
+      this.setState({ error: 'Invalid credentials', submitting: false });
   }
 
   changeEmail = (e) => {
@@ -37,7 +43,7 @@ class Login extends React.Component {
   }
 
   render() {
-      const { email, password, error } = this.state;
+      const { email, password, error, submitting } = this.state;
 
       return (
         <section>
@@ -54,7 +60,9 @@ class Login extends React.Component {
                   <input name='password' type='password'
                          value={password} onChange={this.changePassword} />
               </div>
-              <button type='submit'>Login</button>
+              <button type='submit' disabled={submitting}>
+                  {submitting ? 'Logging in...' : 'Login'}
+              </button>
           </form>
         </section>
       );
