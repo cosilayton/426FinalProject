@@ -6,7 +6,7 @@ import {
   Switch
 } from "react-router-dom";
 
-import Firebase from './firebase';
+import Firebase from './api/Firebase';
 import Game from './Game';
 import Home from './Home';
 import Login from './Login';
@@ -35,14 +35,13 @@ class App extends React.Component {
 
     render() {
         const { user } = this.state;
-        console.log('user:', user);
         return (
             <div className="app">
                 {Firebase && <Router>
                   <Navigation user={user} onLogout={this.onLogout} />
                   <Switch>
                     <Route path="/game">
-                      {user ? <Game /> : <Redirect to='/login' />}
+                      { (user === null) ? <Redirect to='/login' /> : (user ? <Game /> : null)}
                     </Route>
                     <Route path="/login">
                       {user ? <Redirect to='/' /> : <Login />}

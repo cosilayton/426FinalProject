@@ -36,7 +36,7 @@ table.board {
   border-collapse: collapse;
   position: absolute;
   margin: auto;
-  top: 40px;
+  top: 100px;
   background-repeat: repeat;
 }
 
@@ -55,4 +55,7 @@ table.board td.c2 { background-color: blue; }
 table.board td.c3 { background-color: red; }
 table.board td.c4 { background-color: green; }
 
-
+img.avatar {
+    border-radius: 50%;
+    width: 50px;
+}

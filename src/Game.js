@@ -1,4 +1,5 @@
 import React from 'react';
+import ApiGames from './api/Games';
 
 const SHAPES = {
     SQUARE_2_2: [
@@ -83,7 +84,9 @@ class Game extends React.Component {
             currentBlock: NO_BLOCK
         };
 
-        // additional fields, not part of component's React state
+        // Additional fields, not part of component's React state. Updating
+        // them does not make the component re-render.
+        this.gameId = null;
         this.intervalId = null;
         this.keyboardEnabled = false;
     }
@@ -161,6 +164,7 @@ class Game extends React.Component {
     }
 
     start = () => {
+        this.gameId = ApiGames.create();
         this.setState({ started: true, score: 0, board: EMPTY_BOARD() });
     }
 
@@ -269,6 +273,8 @@ class Game extends React.Component {
         this.intervalId = null;
         this.disableKeyboard();
         this.setState({ started: false });
+        ApiGames.finish(this.gameId);
+        delete this.gameId;
         alert('Game Over!');
     }
 
@@ -333,6 +339,7 @@ class Game extends React.Component {
                 }
             }
             this.setState({ board, score });
+            ApiGames.updateScore(this.gameId, score);
         }
     }
 

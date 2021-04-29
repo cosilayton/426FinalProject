@@ -1,5 +1,6 @@
 import Firebase from 'firebase/app';
 import "firebase/auth";
+import "firebase/database";
 
 const CONFIG = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID,

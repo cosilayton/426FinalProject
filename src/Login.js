@@ -1,6 +1,8 @@
 import React from 'react';
 
-import Firebase from './firebase';
+import ApiUsers from './api/Users';
+import Gravatar from './api/Gravatar';
+import Firebase from './api/Firebase';
 
 class Login extends React.Component {
 
@@ -27,7 +29,11 @@ class Login extends React.Component {
   }
 
   onSuccess = (e) => {
+      const { email } = this.state;
       this.setState({ submitting: false });
+      const profileURL = Gravatar.profileImageURL(email);
+      const username = email.split('@')[0];
+      ApiUsers.create(username, profileURL);
   }
 
   onError = (e) => {

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Firebase from './firebase';
+import Firebase from './api/Firebase';
 
 class SignUp extends React.Component {
 
