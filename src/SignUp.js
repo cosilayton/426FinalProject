@@ -74,8 +74,8 @@ class SignUp extends React.Component {
               </div>
               <div>
                   Username:
-                  <input name='username' type='username'
-                         value={username} onChange={this.changeUsername} />
+                  {/* <input name='username' type='username'
+                         value={username} onChange={this.changeUsername} /> */}
               </div>
               <div>
                   Password:
