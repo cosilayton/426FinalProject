@@ -10,16 +10,20 @@ class SignUp extends React.Component {
       this.state = {
           email: '',
           password: '',
+          username: '',
           error: '',
           submitting: false
       };
   }
 
   onSubmit = (e) => {
-      const { email, password } = this.state;
+      const { email, password, username } = this.state;
       e.preventDefault();
-      if ((email !== '') && (password !== '')) {
+      if ((email !== '') && (password !== '') && (username !== '')) {
           this.setState({ error: '', submitting: true });
+          // how do I add username to it?
+          // or is this done in Users?
+          // then how would i connect them?
           Firebase.auth().createUserWithEmailAndPassword(email, password)
               .then(this.onSuccess)
               .catch(this.onError)
@@ -42,6 +46,19 @@ class SignUp extends React.Component {
       this.setState({ password: e.target.value });
   }
 
+  changeUsername = (e) => {
+      let users = Firebase.database().ref('users');
+      users.child('username').equalTo(e.target.value).once("value", snapshot => {
+          if ((snapshot.exists())) {
+              // if it exists then don't want to add it and user should choose a different username
+          }
+      })
+      
+      this.setState({ username: e.target.value });
+  }
+
+  // do i check here if the username has been taken?
+
   render() {
       const { email, password, error, submitting } = this.state;
 
@@ -54,6 +71,11 @@ class SignUp extends React.Component {
                   Email:
                   <input name='email' type='email'
                          value={email} onChange={this.changeEmail} />
+              </div>
+              <div>
+                  Username:
+                  <input name='username' type='username'
+                         value={username} onChange={this.changeUsername} />
               </div>
               <div>
                   Password:

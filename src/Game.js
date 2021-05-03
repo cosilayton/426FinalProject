@@ -129,6 +129,7 @@ class Game extends React.Component {
     }
 
     // Render the block or clear it.
+    // Determining if block can be placed
     canRenderAt(board, block, x, y) {
         const rows = SHAPES[block.shape];
         for (var i = 0; i < rows.length; i++) {
@@ -158,17 +159,25 @@ class Game extends React.Component {
         const canPlace = this.canRenderAt(board, currentBlock, x, y);
         if (canPlace) {
             this.renderBlock(board, currentBlock, currentBlock.color);
+            // update state
             this.setState({ board, currentBlock });
         }
         return canPlace;
     }
 
+    // when start is clicked, want to add the game 
+    // to the firebase database
+    // update state so that started is now true
+    // had to separate because wasn't emptying board if start
+    // was pressed during the game 
     start = () => {
         this.gameId = ApiGames.create();
         this.setState({ started: true, score: 0, board: EMPTY_BOARD() });
     }
 
+    // what happens right after pressing start
     started = () => {
+        // generate and render the next random block to show up at the top of the board
         this.nextBlock();
         this.intervalId = setInterval(this.tick, TICK_EVERY_MS);
         this.enableKeyboard();
@@ -356,8 +365,10 @@ class Game extends React.Component {
         }
     }
 
+    // function to be called in setinterval
     tick = () => {
         if (!this.moveBlockDown()) {
+            // check if any rows can be cleared
             this.clearRows();
             if (!this.nextBlock()) {
                 this.gameOver();
