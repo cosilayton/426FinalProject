@@ -1,7 +1,8 @@
 import React from 'react';
+
 import ApiGames from './api/Games';
 
-import { Modal } from 'react-bulma-components';
+import Alert from './Alert';
 
 const SHAPES = {
     SQUARE_2_2: [
@@ -84,7 +85,7 @@ class Game extends React.Component {
             score: 0,
             board: EMPTY_BOARD(),
             currentBlock: NO_BLOCK,
-            showModal: false
+            showAlert: false
         };
 
         // Additional fields, not part of component's React state. Updating
@@ -98,11 +99,6 @@ class Game extends React.Component {
         if (!prevState.started && this.state.started) {
             this.started();
         }
-    }
-
-    componentDidMount() {
-        console.log('set showModal to true');
-        this.setState({ showModal: true });
     }
 
     componentWillUnmount() {
@@ -292,7 +288,11 @@ class Game extends React.Component {
         this.setState({ started: false });
         ApiGames.finish(this.gameId);
         delete this.gameId;
-        alert('Game Over!');
+        this.setState({ showAlert: true });
+    }
+
+    onAlertClose = () => {
+        this.setState({ showAlert: false });
     }
 
     clearRow(board, rowIdx) {
@@ -389,7 +389,7 @@ class Game extends React.Component {
     }
 
     render() {
-        const { board, started, paused, score, showModal } = this.state;
+        const { board, started, paused, score, showAlert } = this.state;
         const can = {
             start: !started,
             pause: started && !paused,
@@ -397,16 +397,10 @@ class Game extends React.Component {
             resume: paused
         };
 
-        console.log('showModal', showModal);
-
         return (
             <div className='game'>
-                { showModal &&
-                <Modal>
-                    <Modal.Content> 
-                        Game Over
-                    </Modal.Content>
-                </Modal>}
+
+            {showAlert && <Alert message='Game Over' onClose={this.onAlertClose} />}
 
                 <div className='controls'>
                     <span>Score: {score}</span>
