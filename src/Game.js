@@ -1,6 +1,8 @@
 import React from 'react';
 import ApiGames from './api/Games';
 
+import { Modal } from 'react-bulma-components';
+
 const SHAPES = {
     SQUARE_2_2: [
         [ 'x', 'x' ],
@@ -81,7 +83,8 @@ class Game extends React.Component {
             dropping: false,
             score: 0,
             board: EMPTY_BOARD(),
-            currentBlock: NO_BLOCK
+            currentBlock: NO_BLOCK,
+            showModal: false
         };
 
         // Additional fields, not part of component's React state. Updating
@@ -95,6 +98,11 @@ class Game extends React.Component {
         if (!prevState.started && this.state.started) {
             this.started();
         }
+    }
+
+    componentDidMount() {
+        console.log('set showModal to true');
+        this.setState({ showModal: true });
     }
 
     componentWillUnmount() {
@@ -381,15 +389,25 @@ class Game extends React.Component {
     }
 
     render() {
-        const { board, started, paused, score } = this.state;
+        const { board, started, paused, score, showModal } = this.state;
         const can = {
             start: !started,
             pause: started && !paused,
             play: started && !paused,
             resume: paused
         };
+
+        console.log('showModal', showModal);
+
         return (
             <div className='game'>
+                { showModal &&
+                <Modal>
+                    <Modal.Content> 
+                        Game Over
+                    </Modal.Content>
+                </Modal>}
+
                 <div className='controls'>
                     <span>Score: {score}</span>
                     <button onClick={this.moveBlockLeft} disabled={!can.play}>

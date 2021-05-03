@@ -36,7 +36,7 @@ class App extends React.Component {
     render() {
         const { user } = this.state;
         return (
-            <div className="app">
+            <div className="app container">
                 {Firebase && <Router>
                   <Navigation user={user} onLogout={this.onLogout} />
                   <Switch>

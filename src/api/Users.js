@@ -7,17 +7,16 @@ const ApiUsers = {
         user.set({ username, profileURL });
     },
     exists(username)  {
-        // TODO: fix me
         const users = Firebase.database().ref('users');
-        users.get().then(data => {
-            const uids = Object.keys(data.val());
-            for (var uid in uids) {
-                console.log((data.val())[uid]);
+        return users.get().then(snapshot => {
+            const data = snapshot.val();
+            for (let k in data) {
+                const existing = data[k].username;
+                if (existing === username) {
+                    return true;
+                }
             }
-        });
-        return users.child('username').equalTo(username).get().then(data => {
-            console.log('data:', data);
-            return data.exists();
+            return false;
         });
     },
     profileURL(uid)  {

@@ -47,22 +47,31 @@ class Login extends React.Component {
 
       return (
         <section>
-          <h1>Login</h1>
-          {error && <div className='error'>{error}</div>}
+          <h1 className='title'>Login</h1>
+          {error &&
+          <div className="notification is-danger is-light">{ error }</div>}
           <form method='post' onSubmit={this.onSubmit}>
-              <div>
-                  Email:
-                  <input name='email' type='email'
-                         value={email} onChange={this.changeEmail} />
+              <div className='field'>
+                  <label className='label'>Email:</label>
+                  <div className='control'>
+                      <input className='input' name='email' type='email'
+                             value={email} onChange={this.changeEmail} />
+                  </div>
               </div>
-              <div>
-                  Password:
-                  <input name='password' type='password'
-                         value={password} onChange={this.changePassword} />
+              <div className='field'>
+                  <label className='label'>Password:</label>
+                  <div className='control'>
+                      <input className='input' name='password' type='password'
+                             value={password} onChange={this.changePassword} />
+                  </div>
               </div>
-              <button type='submit' disabled={submitting}>
-                  {submitting ? 'Logging in...' : 'Login'}
-              </button>
+              <div className='field'>
+                  <div className='control'>
+                      <button className='button is-primary' type='submit' disabled={submitting}>
+                          {submitting ? 'Logging in...' : 'Login'}
+                      </button>
+                  </div>
+              </div>
           </form>
         </section>
       );

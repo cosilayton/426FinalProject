@@ -30,9 +30,7 @@ class SignUp extends React.Component {
       e.preventDefault();
       if ((email !== '') && (password !== '') && (username !== '')) {
           this.setState({ error: '', submitting: true });
-          let exists = await ApiUsers.exists(username);
-          console.log('exists:', exists);
-          exists = true;
+          const exists = await ApiUsers.exists(username);
           if (exists) {
               this.setState({ error: 'Username not available', submitting: false });
           } else {
@@ -97,31 +95,45 @@ class SignUp extends React.Component {
 
       return (
         <section>
-          <h1>Sign Up</h1>
-          {error && <div className='error'>{error}</div>}
+          <h1 className='title'>Sign Up</h1>
           <form method='post' onSubmit={this.onSubmit}>
-              <div>
-                  Email:
-                  <input name='email' type='email'
-                         value={email} onChange={this.changeEmail} />
+              {error &&
+              <div className="notification is-danger is-light">{ error }</div>}
+              <div className='field'>
+                  <label className='label'>Email:</label>
+                  <div className='control'>
+                      <input className='input' name='email' type='email'
+                             value={email} onChange={this.changeEmail} />
+                  </div>
               </div>
-              <div>
-                  Username:
-                  <input name='username' type='username'
-                         value={username} onChange={this.changeUsername} />
-                  <button onClick={this.suggestUsername}
-                          type='button' disabled={suggesting}>
-                      { suggesting ? 'Suggesting...' : 'Suggest Username' }
-                  </button>
+              <div className='field'>
+                  <label className='label'>Username:</label>
+                  <div className='control columns'>
+                      <div className='column is-four-fifths'>
+                      <input className='input' name='username' type='username'
+                             value={username} onChange={this.changeUsername} />
+                      </div>
+                      <div className='column'>
+                      <button className='button is-primary is-light' style={{ width: '100%' }}
+                              onClick={this.suggestUsername}
+                              type='button' disabled={suggesting}>
+                          { suggesting ? 'Suggesting...' : 'Suggest Username' }
+                      </button>
+                      </div>
+                  </div>
               </div>
-              <div>
-                  Password:
-                  <input name='password' type='password'
+              <div className='field'>
+                  <label className='label'>Password:</label>
+                  <input className='input' name='password' type='password'
                          value={password} onChange={this.changePassword} />
               </div>
-              <button type='submit' disabled={submitting}>
-                  {submitting ? 'Signing up...' : 'Signup'}
-              </button>
+              <div className='field'>
+                  <div className='control'>
+                      <button type='submit' className='button is-primary' disabled={submitting}>
+                          {submitting ? 'Signing up...' : 'Signup'}
+                      </button>
+                  </div>
+              </div>
           </form>
         </section>
       );
