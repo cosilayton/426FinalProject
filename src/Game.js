@@ -399,30 +399,8 @@ class Game extends React.Component {
 
         return (
             <div className='game'>
-
-            {showAlert && <Alert message='Game Over' onClose={this.onAlertClose} />}
-
-                <div className='controls'>
-                    <span>Score: {score}</span>
-                    <button onClick={this.moveBlockLeft} disabled={!can.play}>
-                        Left
-                    </button>
-                    <button onClick={this.moveBlockRight} disabled={!can.play}>
-                        Right
-                    </button>
-                    <button onClick={this.dropBlock} disabled={!can.play}>
-                        Drop
-                    </button>
-                    <button onClick={this.start} disabled={!can.start}>
-                        Start
-                    </button>
-                    <button onClick={this.pause} disabled={!can.pause}>
-                        Pause
-                    </button>
-                    <button onClick={this.resume} disabled={!can.resume}>
-                        Resume
-                    </button>
-                </div>
+                {showAlert && <Alert message='Game Over' onClose={this.onAlertClose} />}
+                <div className='score'>Score: {score}</div>
                 <table className='board' style={STYLES.BOARD}>
                   <tbody>
                     {board.map((row, j) => (
@@ -432,6 +410,29 @@ class Game extends React.Component {
                     ))}
                   </tbody>
                 </table>
+                <div className='controls'>
+                    <button className='button' onClick={this.moveBlockLeft} disabled={!can.play}>
+                        ⇦
+                    </button>
+                    <button className='button' onClick={this.dropBlock} disabled={!can.play}>
+                        ⇩
+                    </button>
+                    <button className='button' onClick={this.moveBlockRight} disabled={!can.play}>
+                        ⇨
+                    </button>
+                    {can.start && 
+                    <button className='button' onClick={this.start} disabled={!can.start}>
+                        Start
+                    </button>}
+                    {can.pause &&
+                    <button className='button' onClick={this.pause} disabled={!can.pause}>
+                        Pause
+                    </button>}
+                    {can.resume &&
+                    <button className='button' onClick={this.resume} disabled={!can.resume}>
+                        Resume
+                    </button>}
+                </div>
             </div>
         );
     }

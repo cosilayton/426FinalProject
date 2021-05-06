@@ -17,29 +17,46 @@ body {
 }
 
 nav {
-  margin: 0 5px;
+    margin-bottom: 2em;
 }
 
-nav a {
-  margin-right: 5px;
+nav .links {
+  position: absolute;
+  right: 5px;
+  top: 0px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+nav .links a, nav .links img {
+  margin: 5px 0 0 10px;
+}
+
+section.home {
+    text-align: center;
+    margin-top: 20%;
+    font-size: 200%;
+}
+
+.game {
+    text-align: center;
+    padding-bottom: 1em;
+}
+
+.game .score {
+    text-align: center;
+    font-size: 200%;
 }
 
 .controls {
-  position: absolute;
-  top: 5px;
-  right: 20px;
+    margin: 1em 0;
+}
+
+.controls button {
+    margin: 0 3px;
 }
 
 table.board {
-  border-collapse: collapse;
-  position: absolute;
   margin: auto;
-  top: 100px;
+  border-collapse: collapse;
   background-repeat: repeat;
 }
 
@@ -58,7 +75,13 @@ table.board td.c2 { background-color: blue; }
 table.board td.c3 { background-color: red; }
 table.board td.c4 { background-color: green; }
 
+.navbar-brand .navbar-item {
+    font-size: 200%;
+    font-weight: 700;
+}
+
 img.avatar {
     border-radius: 50%;
     width: 50px;
+    max-height: 50px;
 }
