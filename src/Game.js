@@ -421,15 +421,15 @@ class Game extends React.Component {
                         ⇨
                     </button>
                     {can.start && 
-                    <button className='button' onClick={this.start} disabled={!can.start}>
+                    <button className='button btn-start' onClick={this.start} disabled={!can.start}>
                         Start
                     </button>}
                     {can.pause &&
-                    <button className='button' onClick={this.pause} disabled={!can.pause}>
+                    <button className='button btn-pause' onClick={this.pause} disabled={!can.pause}>
                         Pause
                     </button>}
                     {can.resume &&
-                    <button className='button' onClick={this.resume} disabled={!can.resume}>
+                    <button className='button btn-resume' onClick={this.resume} disabled={!can.resume}>
                         Resume
                     </button>}
                 </div>

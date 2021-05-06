@@ -17,17 +17,17 @@ body {
 }
 
 nav {
-    margin-bottom: 2em;
+  margin-bottom: 2em;
 }
 
 nav .links {
-  position: absolute;
-  right: 5px;
-  top: 0px;
+  line-height: 64px;
+  display: flex;
+  align-items: center;
 }
 
 nav .links a, nav .links img {
-  margin: 5px 0 0 10px;
+    margin-left: 15px;
 }
 
 section.home {
@@ -54,6 +54,10 @@ section.home {
     margin: 0 3px;
 }
 
+.btn-start, .btn-pause, .btn-resume {
+    width: 5em;
+}
+
 table.board {
   margin: auto;
   border-collapse: collapse;
@@ -78,10 +82,12 @@ table.board td.c4 { background-color: green; }
 .navbar-brand .navbar-item {
     font-size: 200%;
     font-weight: 700;
+    flex-grow: 1;
 }
 
 img.avatar {
     border-radius: 50%;
     width: 50px;
+    height: 50px;
     max-height: 50px;
 }

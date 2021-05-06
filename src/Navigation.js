@@ -7,14 +7,12 @@ const Navigation = ({ onLogout, user }) => (
             <Link className='navbar-item' to='/'>
                 Tetris
             </Link>
-        </div>
-        <div className='links'>
-            {(user === null) && <Link to='/login'>Login</Link>}
-            {(user === null) && <Link to='/signup'>Signup</Link>}
-            {user && <div>
-                    <button className='button' onClick={onLogout}>Logout</button>
-                    <UserProfile user={user} />
-            </div>}
+            <div className='links'>
+                {(user === null) && <Link to='/login'>Login</Link>}
+                {(user === null) && <Link to='/signup'>Signup</Link>}
+                {user && <button className='button' onClick={onLogout}>Logout</button>}
+                {user && <UserProfile user={user} />}
+            </div>
         </div>
     </nav>
 );
