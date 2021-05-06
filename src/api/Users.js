@@ -8,6 +8,13 @@ const ApiUsers = {
     },
     exists(username)  {
         const users = Firebase.database().ref('users');
+
+        const user = Firebase.database().ref('users').child('username').equalTo(username);
+        user.get().then(snapshot => {
+            console.log('exist:');
+            console.log(snapshot.val());
+        });
+
         return users.get().then(snapshot => {
             const data = snapshot.val();
             for (let k in data) {

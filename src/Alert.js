@@ -6,7 +6,7 @@ const Alert = ({ message, onClose }) => (
       <div className="modal-card">
         <header className="modal-card-head">
           <p className="modal-card-title">Application Alert</p>
-          <button className="delete" aria-label="close"></button>
+          <button className="delete" aria-label="close" onClick={onClose}></button>
         </header>
         <section className="modal-card-body">
             { message }
