@@ -1,20 +1,29 @@
 import Firebase from './Firebase';
 
+const axios = require('axios');
+
 const ApiUsers = {
-    create(username, profileURL)  {
+
+    // Create a user profile record in Firebase, download its Gravatar image
+    // and store it in Firebase Storage.
+    create(username, gravatarURL)  {
         const uid = Firebase.auth().currentUser.uid;
         const user = Firebase.database().ref(`users/${uid}`);
-        user.set({ username, profileURL });
+        user.set({ username, profileURL: '<pending>' });
+        axios({ method: 'get', url: gravatarURL, responseType: 'blob' })
+            .then(resp => {
+                const blob = resp.data;
+                const path = `${uid}.jpg`;
+                const metadata = { contentType: blob.type };
+                Firebase.storage().ref().child(path).put(blob, metadata)
+                    .then(() => {
+                        user.child('profileURL').set(path);
+                    });
+            });
     },
+
     exists(username)  {
         const users = Firebase.database().ref('users');
-
-        const user = Firebase.database().ref('users').child('username').equalTo(username);
-        user.get().then(snapshot => {
-            console.log('exist:');
-            console.log(snapshot.val());
-        });
-
         return users.get().then(snapshot => {
             const data = snapshot.val();
             for (let k in data) {
@@ -26,6 +35,7 @@ const ApiUsers = {
             return false;
         });
     },
+
     profileURL(uid)  {
         const user = Firebase.database().ref(`users/${uid}`);
         return user.child('profileURL').get().then(data => data.val());

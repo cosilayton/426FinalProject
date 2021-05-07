@@ -1,6 +1,11 @@
 import React from 'react';
 
+import Firebase from './api/Firebase';
 import Users from './api/Users';
+
+const REFRESH_MS = 1000;
+const URL_ANONYMOUS = '/anonymous.png';
+const URL_PENDING = '<pending>';
 
 class UserProfile extends React.PureComponent {
     constructor(props) {
@@ -11,12 +16,28 @@ class UserProfile extends React.PureComponent {
     }
 
     componentDidMount() {
+        this.checkImage();
+    }
+
+    checkImage = () => {
         const { user } = this.props;
         Users.profileURL(user.uid).then(this.onSuccess);
     }
 
     onSuccess = (url) => {
-        this.setState({ url });
+        if (!url) {
+            this.setState({ url: URL_ANONYMOUS });
+        } else if (url === URL_PENDING) {
+            setTimeout(this.checkImage, REFRESH_MS);
+            this.setState({ url: URL_ANONYMOUS });
+        } else if (url.indexOf('http') === 0) {
+            // Absolute/external URL - use as-is
+            this.setState({ url });
+        } else {
+            // Firebase storage path - create a URL
+            Firebase.storage().ref().child(url).getDownloadURL()
+                .then(storageURL => this.setState({ url: storageURL }));
+        }
     }
 
     render() {
