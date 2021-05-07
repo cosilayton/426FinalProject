@@ -122,9 +122,9 @@ class Game extends React.Component {
     renderBlock(board, currentBlock, color) {
         const { x, y } = currentBlock;
         const rows = SHAPES[currentBlock.shape];
-        for (var i = 0; i < rows.length; i++) {
+        for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
-            for (var j = 0; j < row.length; j++) {
+            for (let j = 0; j < row.length; j++) {
                 if (row[j] !== ' ') {
                     board[y + i][x + j] = color;
                 }
@@ -136,9 +136,9 @@ class Game extends React.Component {
     // Determining if block can be placed
     canRenderAt(board, block, x, y) {
         const rows = SHAPES[block.shape];
-        for (var i = 0; i < rows.length; i++) {
+        for (let i = 0; i < rows.length; i++) {
             const row = rows[i];
-            for (var j = 0; j < row.length; j++) {
+            for (let j = 0; j < row.length; j++) {
                 if (row[j] !== ' ') {
                     if (board[y + i][x + j] !== BLANK_SPACE) {
                         return false;
@@ -296,13 +296,13 @@ class Game extends React.Component {
     }
 
     clearRow(board, rowIdx) {
-        for (var i = 0; i < board[rowIdx].length; i++) {
+        for (let i = 0; i < board[rowIdx].length; i++) {
             board[rowIdx][i] = BLANK_SPACE;
         }
     }
 
     isRowFull(board, rowIdx) {
-        for (var i = 0; i < board[rowIdx].length; i++) {
+        for (let i = 0; i < board[rowIdx].length; i++) {
             if (board[rowIdx][i] === BLANK_SPACE) {
                 return false;
             }
@@ -313,7 +313,7 @@ class Game extends React.Component {
     // Move the rows down by shifting the array rows. Insert a blank row
     // into the 1st position.
     moveRowsDown(board, targetRowIdx) {
-        for (var row = targetRowIdx; row > 0; row--) {
+        for (let row = targetRowIdx; row > 0; row--) {
             board[row] = board[row - 1];
         }
         board[0] = EMPTY_ROW();
@@ -334,7 +334,7 @@ class Game extends React.Component {
         let { score } = this.state;
 
         let shouldClear = false;
-        for (var i = 0; i < shapeHeight; i++) {
+        for (let i = 0; i < shapeHeight; i++) {
             const rowIdx = currentBlock.y + i;
             if (this.isRowFull(board, rowIdx)) {
                 shouldClear = true;
